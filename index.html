@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>행정안전부 알리미 | 인공지능(AI)과 함께 여는 대한민국 행정</title>
+  <!-- Tailwind CSS CDN (DarkMode Class 기반 지원) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gov: {
+              blue: '#003366',      // 대한민국 정부상징 청색 (태극 청색)
+              bluelight: '#0d4b8a', // 청색 하이라이트
+              bluepale: '#edf3fa',  // 라이트모드 청색 배경
+              red: '#C62828',       // 대한민국 정부상징 적색 (태극 홍색)
+              redlight: '#e53935',
+              redpale: '#fdf2f2',
+              dark: '#1b2533',      // 국가 행정 딥네이비 차콜
+              darkbg: '#0c131d',    // 야간모드 메인 배경
+              darkcard: '#162232',  // 야간모드 카드 배경
+              darkborder: '#243447',// 야간모드 경계선
+              border: '#dbe2ea',
+              bg: '#f8fafc'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Font (Pretendard) -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    body {
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+    .gov-hero-gradient {
+      background: linear-gradient(135deg, #001f3f 0%, #003366 50%, #0d467c 100%);
+    }
+    .dark .gov-hero-gradient {
+      background: linear-gradient(135deg, #060c14 0%, #0c1826 50%, #11253d 100%);
+    }
+    .gov-taegeuk-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #C62828 0%, #C62828 50%, #003366 50%, #003366 100%);
+    }
+    /* AI 펄스 애니메이션 */
+    @keyframes aiPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .7; transform: scale(1.05); }
+    }
+    .ai-badge-pulse {
+      animation: aiPulse 2.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gov-bg dark:bg-gov-darkbg text-slate-800 dark:text-slate-100 antialiased min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- 정부상징 태극선 (최상단 식별 띠) -->
+  <div class="gov-taegeuk-bar w-full"></div>
+
+  <!-- 상단 네비게이션 헤더 -->
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-gov-darkcard/95 backdrop-blur-md border-b border-gov-border dark:border-gov-darkborder shadow-xs transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-2">
+      
+      <!-- 실제 행정안전부 정부상징 로고 영역 (Base64 인라인 탑재로 외부 오류 원천 차단) -->
+      <a href="#" class="flex items-center space-x-2.5 flex-shrink-0 group">
+        <div class="h-9 sm:h-10 flex items-center bg-white dark:bg-white/95 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700 shadow-xs">
+          <img 
+            src="mois_logo.png" 
+            alt="대한민국 행정안전부" 
+            class="h-7 sm:h-8 w-auto object-contain"
+            onerror="this.onerror=null; this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKcAAAAsCAYAAAAAYaj3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpDNjU4NkIzOUYwQjNFNDExQjE4QUIyNzAwMjI3OUYxRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1OTZDMjRDNUQ2RUQxMUVBQkE5OUIyMDU3QzlEMDlBNiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1OTZDMjRDNEQ2RUQxMUVBQkE5OUIyMDU3QzlEMDlBNiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0Njk1QTE4MEEyRDBFQTExOTk4QUQ1RkM4NDZDNDhEMCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDNjU4NkIzOUYwQjNFNDExQjE4QUIyNzAwMjI3OUYxRCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PrzMeOIAAAtySURBVHja7J1rbBxXFYCPY1cGE6drapE2aZRJRWrEH6+tIEWpZK9RhIoi+UErHATKepv+KETEXrWYgkjWm/xBKdGuIwo/aLJ2EFJctfJDKkUQddeR4E9Ds6maQlrUjFvaUJTIUzu4mCg1c8b32mfvzuvOjl/xHOnK692Zu3fmfnNe98xs2dzcHHiQdr1F2V+4/O4HcPmdD2Di+g0Yf+Nq0cbbH6gF5YH7oKmxDuof3gahjVX4tqq3Eb31s9e+SGfntyGQu0MqJLfv0ltCbwpCePaVv8DYhUugTc847FYILAJ6YN8jyoF9e3p0UHv0twb0lvQT0kDWvpS51JxhvWXwLwJ57IUxQ0v6ITqkcPTJVl273gcM0L5AcwbiFk6EJYGa8un0OcN8W8mmO3fgG5OT8NWZmfn2nxnjPSpvV1XBPysrjb9/rAkZf1EQ0B/u34smP6//G9NbPoAzgNPqsxDTlu0I5alz5y072T09DU/862MDTFlBUF+qrYUz92+Gmgc3w8snDkH9zm2a/lGcmfsAzgDOIjCz2q2Z8N4fPGepLRHKng8/hN1T0yUPZKq8XAf0fkhv3QKnjzyhm/s9wDToQABnEBBJgXn0/fcNbemXoPlH0FH7PvOTXzJ/dE+GfTwQTFUAJ8qwHZgI0bm//d3wKamUK1ugsnkX3BP+it7qCj6b06bhdv4qzI6/DrO5i7YDwn6x/2PdJ/T/ejmgGMXngula32bdCH52HUi6AnNDqBo+19YCG7u/VwSkncwMjult1BHUZx7aAd85k4DWpgb0QXfoTQvM+vqRDeR1BMG0i8gpmFXRVtj83qtQkzkuBSbft/a101CbPQ2VkV2W2/3ivWvw6uHnYOL6TXQ1hoPpWr9wpjBdZBWVo4+JYKK2RKgQSnxdiqAbgJDem+q17Otnb16B3/T284unK5iy9WfWcdIzX+541jS5jlD+/q0r82DqMMlqSjeCPunNb/XAHfUj00j+6stpaG9tUpl5L9Wk46JCir3GfGrcJCgMs9cqa2H2Pt9H8+nQI+R1zsW4NXBeSeN9auAxX2wjCmv03CxpQJTAlR+rVR/UmksJJgr2+6U3XoQbXz9ogCr6upt+qmvP1iaFXUilRu8hAQozCLLsNV+1SpF9WghIWcnvHhTGT/cvs4AhYWI1BsB6yTdLYG8RPsN+opJjbhH2TwjnpihuMTlPTpIl57eMw4lfpuCSpJk8ODtr5DFrhtNLBuaCj8竽';">
+        </div>
+        <span class="hidden 2xl:inline-block text-xs font-bold text-gov-blue dark:text-blue-300 bg-gov-bluepale dark:bg-blue-950/70 px-2.5 py-1 rounded-md border border-gov-blue/20 whitespace-nowrap">대국민 알리미</span>
+      </a>
+
+      <!-- 데스크톱 메뉴 (줄바꿈 방지 whitespace-nowrap 적용) -->
+      <nav class="hidden lg:flex items-center space-x-1 xl:space-x-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+        <a href="#about" class="px-3 py-2 rounded-lg hover:text-gov-blue dark:hover:text-blue-300 hover:bg-gov-bluepale dark:hover:bg-slate-800 transition whitespace-nowrap">행안부 소개</a>
+        <a href="#ai-gov" class="px-3 py-2 rounded-lg text-gov-blue dark:text-blue-300 bg-blue-50/70 dark:bg-blue-900/40 hover:bg-gov-bluepale border border-blue-200 dark:border-blue-800 transition flex items-center gap-1.5 font-bold whitespace-nowrap">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+          <span>인공지능정부실(AX)</span>
+        </a>
+        <a href="#core-roles" class="px-3 py-2 rounded-lg hover:text-gov-blue dark:hover:text-blue-300 hover:bg-gov-bluepale dark:hover:bg-slate-800 transition whitespace-nowrap">4대 핵심업무</a>
+        <a href="#citizen-services" class="px-3 py-2 rounded-lg hover:text-gov-blue dark:hover:text-blue-300 hover:bg-gov-bluepale dark:hover:bg-slate-800 transition whitespace-nowrap">주요 서비스</a>
+        <a href="#faq" class="px-3 py-2 rounded-lg hover:text-gov-blue dark:hover:text-blue-300 hover:bg-gov-bluepale dark:hover:bg-slate-800 transition whitespace-nowrap">자주 묻는 질문</a>
+      </nav>
+
+      <!-- 우측 컨트롤 버튼: 야간모드 토글 & 공식 링크 (줄바꿈 방지 whitespace-nowrap 적용) -->
+      <div class="flex items-center space-x-2 flex-shrink-0">
+        <!-- 야간 모드 (다크모드) 전환 버튼 -->
+        <button id="themeToggleBtn" onclick="toggleDarkMode()" aria-label="야간 모드 전환" 
+                class="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-300 dark:border-slate-600 shadow-xs whitespace-nowrap flex-shrink-0">
+          <i id="themeIcon" data-lucide="moon" class="w-4 h-4 text-gov-blue dark:text-amber-400"></i>
+          <span id="themeText" class="whitespace-nowrap">야간 모드</span>
+        </button>
+
+        <a href="https://www.mois.go.kr" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center space-x-1 text-xs font-bold text-gov-blue dark:text-blue-200 bg-white dark:bg-slate-800 hover:bg-gov-blue hover:text-white dark:hover:bg-blue-600 px-3.5 py-2 rounded-xl transition border border-gov-blue dark:border-blue-400 shadow-xs whitespace-nowrap flex-shrink-0">
+          <span class="whitespace-nowrap">공식 누리집</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 히어로 섹션 (정부 전용 블루 테마) -->
+  <section class="gov-hero-gradient text-white pt-14 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-300">
+    <div class="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+    
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      
+      <!-- 인공지능정부실(AX) 집중 배너 -->
+      <div class="inline-flex items-center space-x-2 bg-blue-900/60 dark:bg-blue-950/80 border border-blue-400/40 text-blue-200 text-xs sm:text-sm px-4 py-1.5 rounded-full mb-6 font-semibold backdrop-blur-sm shadow-md ai-badge-pulse">
+        <i data-lucide="cpu" class="w-4 h-4 text-cyan-300"></i>
+        <span>정부 혁신의 심장: <strong>인공지능정부실(AX)</strong>이 대한민국 공공서비스를 AI로 대전환합니다</span>
+      </div>
+      
+      <h2 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight mb-5">
+        국민을 안전하게, 행정을 똑똑하게<br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-cyan-100 to-amber-200">AI 기반 미래 정부를 선도하는 행정안전부</span>
+      </h2>
+      <p class="text-base sm:text-lg text-slate-200 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8 font-normal">
+        정부24 민원부터 AI 맞춤형 원스톱 행정, 24시간 재난 안전망까지!<br class="hidden sm:inline" />
+        국민의 일상과 가장 밀접한 대한민국 행정의 컨트롤타워를 알기 쉽게 만나보세요.
+      </p>
+
+      <!-- 검색 바 -->
+      <div class="max-w-xl mx-auto relative mb-6">
+        <div class="relative flex items-center">
+          <i data-lucide="search" class="w-5 h-5 absolute left-4 text-slate-400"></i>
+          <input type="text" id="searchInput" placeholder="궁금한 단어를 검색해보세요 (예: AI정부, 정부24, 재난문자, 고향사랑...)" 
+                 class="w-full pl-12 pr-28 py-3.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-400/40 text-sm sm:text-base border border-slate-200 dark:border-slate-700">
+          <button onclick="handleSearch()" class="absolute right-2 px-4 py-2 bg-gov-blue hover:bg-gov-bluelight text-white rounded-lg text-xs sm:text-sm font-bold transition shadow-sm">
+            검색
+          </button>
+        </div>
+      </div>
+
+      <!-- 추천 검색어 태그 -->
+      <div class="flex flex-wrap justify-center gap-2 text-xs text-slate-200">
+        <span class="opacity-80">추천 키워드:</span>
+        <button onclick="quickFilter('AI정부')" class="hover:bg-white/20 bg-white/10 px-3 py-1 rounded-md border border-white/20 transition text-amber-300 font-semibold">#인공지능정부실</button>
+        <button onclick="quickFilter('정부24')" class="hover:bg-white/20 bg-white/10 px-3 py-1 rounded-md border border-white/15 transition">#정부24</button>
+        <button onclick="quickFilter('재난안전')" class="hover:bg-white/20 bg-white/10 px-3 py-1 rounded-md border border-white/15 transition">#재난문자</button>
+        <button onclick="quickFilter('모바일신분증')" class="hover:bg-white/20 bg-white/10 px-3 py-1 rounded-md border border-white/15 transition">#모바일신분증</button>
+        <button onclick="quickFilter('고향사랑기부제')" class="hover:bg-white/20 bg-white/10 px-3 py-1 rounded-md border border-white/15 transition">#고향사랑e음</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 빠른 핵심 요약 3대 미션 바 -->
+  <section class="max-w-6xl mx-auto px-4 -mt-10 relative z-20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- 1: AI & 디지털 (강조) -->
+      <div class="bg-white dark:bg-gov-darkcard p-6 rounded-2xl shadow-xl border-t-4 border-gov-blue dark:border-blue-400 border-x border-b border-gov-border dark:border-gov-darkborder flex items-start space-x-4 transition-colors">
+        <div class="p-3 bg-blue-100 dark:bg-blue-900/60 text-gov-blue dark:text-blue-300 rounded-xl">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-gov-blue dark:text-blue-300 uppercase tracking-wider block mb-0.5">AI Transformation</span>
+          <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1">인공지능(AI) 정부 구현</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-snug">인공지능정부실 주도로 공공 행정 AX(AI 전환) 및 초개인화 대국민 서비스</p>
+        </div>
+      </div>
+
+      <!-- 2: 안전 (태극 적색 액센트) -->
+      <div class="bg-white dark:bg-gov-darkcard p-6 rounded-2xl shadow-xl border-t-4 border-gov-red border-x border-b border-gov-border dark:border-gov-darkborder flex items-start space-x-4 transition-colors">
+        <div class="p-3 bg-red-100 dark:bg-red-950/60 text-gov-red dark:text-red-300 rounded-xl">
+          <i data-lucide="shield-alert" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-gov-red dark:text-red-300 uppercase tracking-wider block mb-0.5">Safety & Disaster</span>
+          <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1">안전한 국민 일상</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-snug">재난 예방, 긴급재난문자, 경찰청·소방청 협업으로 365일 국민 생명 보호</p>
+        </div>
+      </div>
+
+      <!-- 3: 지방시대 (정부 네이비 액센트) -->
+      <div class="bg-white dark:bg-gov-darkcard p-6 rounded-2xl shadow-xl border-t-4 border-slate-700 dark:border-slate-500 border-x border-b border-gov-border dark:border-gov-darkborder flex items-start space-x-4 transition-colors">
+        <div class="p-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl">
+          <i data-lucide="map-pin" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wider block mb-0.5">Local Autonomy</span>
+          <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1">살기 좋은 지방시대</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-snug">전국 243개 지자체 지원, 고향사랑기부제, 지방소멸 위기 극복</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 메인 본문 영역 -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
+
+    <!-- ★ [핵심 특화 섹션] 인공지능정부실(AX) 특별 소개관 ★ -->
+    <section id="ai-gov" class="scroll-mt-24">
+      <div class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-blue-500/30 relative overflow-hidden">
+        
+        <!-- 배경 그래픽 데코레이션 -->
+        <div class="absolute -right-16 -top-16 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-80 h-80 bg-cyan-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-white/10">
+            <div>
+              <div class="inline-flex items-center space-x-2 px-3 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 rounded-full text-xs font-bold mb-2">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                <span>NEW 조직 개편 & 국가 핵심 동력</span>
+              </div>
+              <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                행정안전부 <span class="text-cyan-300">인공지능정부실</span>(AI Government Bureau)
+              </h2>
+            </div>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-md">
+              기존의 채널 중심 '전자정부'를 넘어, <strong>정부 행정 전반의 인공지능 대전환(AX, AI Transformation)</strong>을 실현하는 정부의 AI 두뇌입니다.
+            </p>
+          </div>
+
+          <!-- 인공지능정부실 산하 3대 국(局) 체제 상세 카드 -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- 1. 인공지능정부정책국 -->
+            <div class="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/15 hover:border-cyan-400/50 transition">
+              <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center mb-4">
+                <i data-lucide="compass" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-bold text-cyan-300 uppercase tracking-widest block mb-1">Policy & Governance</span>
+              <h3 class="text-xl font-bold text-white mb-2">인공지능정부정책국</h3>
+              <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                대한민국 모든 공공부문의 AI 활용 로드맵과 데이터 거버넌스를 설계하고, 신뢰 가능한 공공 AI 윤리와 표준 제도를 정립합니다.
+              </p>
+              <ul class="text-xs text-slate-300 space-y-1.5 border-t border-white/10 pt-3">
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mr-1.5"></i>범정부 공공인공지능 혁신 로드맵</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mr-1.5"></i>공공데이터 정책 및 초거대 AI 데이터셋 개방</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mr-1.5"></i>공무원 실무 AI 정부 실험실 운영</li>
+              </ul>
+            </div>
+
+            <!-- 2. 인공지능정부서비스국 -->
+            <div class="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/15 hover:border-cyan-400/50 transition">
+              <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-300 flex items-center justify-center mb-4">
+                <i data-lucide="sparkles" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-bold text-blue-300 uppercase tracking-widest block mb-1">Public Services</span>
+              <h3 class="text-xl font-bold text-white mb-2">인공지능정부서비스국</h3>
+              <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                국민이 복잡한 서류나 절차를 몰라도 일상어로 물어보면 알아서 찾아주고 처리해 주는 <strong>지능형 민원 서비스</strong>를 구축합니다.
+              </p>
+              <ul class="text-xs text-slate-300 space-y-1.5 border-t border-white/10 pt-3">
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-400 mr-1.5"></i>정부24 지능형 대화형 민원 도우미 고도화</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-400 mr-1.5"></i>국민비서(구삐)의 생성형 AI 기반 맞춤 행정</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-400 mr-1.5"></i>단절 없는 구비서류 제로화 원스톱 서비스</li>
+              </ul>
+            </div>
+
+            <!-- 3. 인공지능정부기반국 -->
+            <div class="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/15 hover:border-cyan-400/50 transition">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-widest block mb-1">Infrastructure & Security</span>
+              <h3 class="text-xl font-bold text-white mb-2">인공지능정부기반국</h3>
+              <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                행정망 장애 없는 튼튼한 국가 디지털 인프라를 운영하고, 고도화되는 사이버 위협으로부터 공공 데이터를 안전하게 방어합니다.
+              </p>
+              <ul class="text-xs text-slate-300 space-y-1.5 border-t border-white/10 pt-3">
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1.5"></i>국가 행정 전산망 재해복구(DR) 다중화</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1.5"></i>모바일 신분증 블록체인 및 보안 인증 체계</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1.5"></i>지역 지자체 디지털 인프라 동반 고도화</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 행정안전부 기관 소개 -->
+    <section id="about" class="scroll-mt-24">
+      <div class="bg-white dark:bg-gov-darkcard rounded-3xl p-8 sm:p-12 border border-gov-border dark:border-gov-darkborder shadow-sm relative overflow-hidden transition-colors">
+        <div class="w-16 h-1.5 bg-gov-blue dark:bg-blue-400 mb-6 rounded-full"></div>
+        <div class="max-w-4xl">
+          <span class="text-gov-blue dark:text-blue-300 font-bold tracking-wider text-xs uppercase mb-2 block">Organization Mission</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-gov-dark dark:text-white mb-4">
+            행정안전부는 대한민국 정부의 ‘살림꾼’이자 국민의 ‘수호천사’입니다.
+          </h2>
+          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-8">
+            중앙정부의 <strong>조직·정원과 정부세종청사 등 국가 자산</strong>을 효율적으로 관리하고, 
+            <strong>전국 17개 시·도 및 226개 시·군·구</strong>와 협력해 지방시대 균형 발전을 이루며, 
+            <strong>경찰청·소방청</strong>과 함께 365일 24시간 재난 안전망을 굳건히 지킵니다.
+          </p>
+          
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div class="bg-gov-bg dark:bg-slate-800/80 rounded-xl p-4 border border-gov-border dark:border-slate-700">
+              <span class="block text-xl sm:text-2xl font-black text-gov-blue dark:text-blue-300">외청</span>
+              <span class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1 block">경찰청 · 소방청</span>
+            </div>
+            <div class="bg-gov-bg dark:bg-slate-800/80 rounded-xl p-4 border border-gov-border dark:border-slate-700">
+              <span class="block text-xl sm:text-2xl font-black text-gov-blue dark:text-blue-300">지자체 협력</span>
+              <span class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1 block">전국 243개 지자체</span>
+            </div>
+            <div class="bg-gov-bg dark:bg-slate-800/80 rounded-xl p-4 border border-gov-border dark:border-slate-700">
+              <span class="block text-xl sm:text-2xl font-black text-gov-blue dark:text-blue-300">미래 혁신</span>
+              <span class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1 block">인공지능정부실(AX)</span>
+            </div>
+            <div class="bg-gov-bg dark:bg-slate-800/80 rounded-xl p-4 border border-gov-border dark:border-slate-700">
+              <span class="block text-xl sm:text-2xl font-black text-gov-red dark:text-red-400">안전망</span>
+              <span class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1 block">365일 재난대응체계</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 4대 핵심 업무 상세 탭 섹션 -->
+    <section id="core-roles" class="scroll-mt-24">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <div class="inline-flex items-center space-x-1.5 px-3 py-1 bg-gov-bluepale dark:bg-blue-950/70 text-gov-blue dark:text-blue-300 rounded-full text-xs font-bold mb-2">
+          <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+          <span>행정안전부 4대 핵심과제</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-gov-dark dark:text-white tracking-tight">알기 쉽게 정리한 4대 핵심 업무</h2>
+        <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm sm:text-base">어렵게 느껴지는 정부 정책을 4가지 대표 영역으로 나누어 설명해 드립니다.</p>
+      </div>
+
+      <!-- 인터랙티브 탭 버튼 -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" id="tabButtons">
+        <button onclick="switchTab('safety')" id="tab-btn-safety" class="tab-btn active px-5 py-3 rounded-xl font-bold text-sm sm:text-base transition flex items-center space-x-2 bg-gov-blue text-white shadow-md">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-red-300"></i>
+          <span>1. 국민안전 및 재난관리</span>
+        </button>
+        <button onclick="switchTab('digital')" id="tab-btn-digital" class="tab-btn px-5 py-3 rounded-xl font-bold text-sm sm:text-base transition flex items-center space-x-2 bg-white dark:bg-gov-darkcard text-slate-700 dark:text-slate-200 hover:bg-gov-bluepale dark:hover:bg-slate-800 border border-gov-border dark:border-gov-darkborder">
+          <i data-lucide="cpu" class="w-4 h-4 text-gov-blue dark:text-blue-300"></i>
+          <span>2. AI정부 & 디지털혁신</span>
+        </button>
+        <button onclick="switchTab('local')" id="tab-btn-local" class="tab-btn px-5 py-3 rounded-xl font-bold text-sm sm:text-base transition flex items-center space-x-2 bg-white dark:bg-gov-darkcard text-slate-700 dark:text-slate-200 hover:bg-gov-bluepale dark:hover:bg-slate-800 border border-gov-border dark:border-gov-darkborder">
+          <i data-lucide="building-2" class="w-4 h-4 text-gov-blue dark:text-blue-300"></i>
+          <span>3. 지방자치 & 균형발전</span>
+        </button>
+        <button onclick="switchTab('gov')" id="tab-btn-gov" class="tab-btn px-5 py-3 rounded-xl font-bold text-sm sm:text-base transition flex items-center space-x-2 bg-white dark:bg-gov-darkcard text-slate-700 dark:text-slate-200 hover:bg-gov-bluepale dark:hover:bg-slate-800 border border-gov-border dark:border-gov-darkborder">
+          <i data-lucide="landmark" class="w-4 h-4 text-gov-blue dark:text-blue-300"></i>
+          <span>4. 정부 살림 & 공공조직</span>
+        </button>
+      </div>
+
+      <!-- 탭 컨텐츠 영역 -->
+      <div class="bg-white dark:bg-gov-darkcard rounded-3xl p-6 sm:p-10 border border-gov-border dark:border-gov-darkborder shadow-sm transition-all duration-300" id="tabContent">
+        
+        <!-- 1) 국민안전 -->
+        <div id="tab-safety" class="tab-pane">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="inline-block px-3 py-1 bg-gov-redpale dark:bg-red-950/70 text-gov-red dark:text-red-300 font-bold rounded-lg text-xs mb-3 border border-red-200 dark:border-red-900">
+                안전총괄 컨트롤타워
+              </div>
+              <h3 class="text-2xl font-bold text-gov-dark dark:text-white mb-4">"각종 재해와 사고로부터 국민을 보호합니다"</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                자연재해(태풍·홍수·폭설·지진)와 사회적 재난(화재·건물 붕괴·감염병)이 발생했을 때 국가적 대응체계를 가동합니다.
+                중앙재난안전대책본부(중대본)를 운영하고 전국 소방청·경찰청과 긴밀히 협력해 현장 구조 및 이재민 구호, 특별재난지역 선포를 주관합니다.
+              </p>
+              
+              <ul class="space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-red mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>긴급재난문자 발송 총괄:</strong> 위험 기상 및 긴급 상황 발생 시 국민 휴대폰으로 경보 즉각 전송</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-red mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>재난안전통신망(PS-LTE) 운영:</strong> 경찰, 소방, 해경, 군 등 구호기관 간 일원화된 무전 지휘체계 가동</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-red mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>스쿨존 및 생활안전 시설 개선:</strong> 어린이 보호구역 정비, 안전신문고 앱을 통한 생활 위험 즉각 개선</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-gov-redpale/60 dark:bg-red-950/30 rounded-2xl p-6 border border-red-150 dark:border-red-900/50">
+              <h4 class="font-bold text-gov-red dark:text-red-300 mb-3 flex items-center space-x-2">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-gov-red dark:text-red-400"></i>
+                <span>국민이 체감하는 대표 사례</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-red-100 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">🚨 안전신문고 앱</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">도로 파임, 소화전 불법주정차, 위험 공사장 등을 사진 찍어 신고하면 지자체가 신속 정비합니다.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-red-100 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">🌧️ 침수 방지 및 특별재난지역 복구 지원</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">집중호우 피해 농가와 주민에게 신속히 재난지원금을 지급하고 국비 복구 계획을 가동합니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2) AI정부 & 디지털혁신 (숨김 상태) -->
+        <div id="tab-digital" class="tab-pane hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="inline-block px-3 py-1 bg-gov-bluepale dark:bg-blue-950/70 text-gov-blue dark:text-blue-300 font-bold rounded-lg text-xs mb-3 border border-blue-200 dark:border-blue-900">
+                인공지능정부실 주도 혁신
+              </div>
+              <h3 class="text-2xl font-bold text-gov-dark dark:text-white mb-4">"인공지능(AI)으로 말하면 다 통하는 지능형 행정"</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                단순히 종이 서류를 PDF로 바꾸는 것을 넘어, 행정안전부 <strong>인공지능정부실</strong>이 국민의 언어를 이해하는 생성형 AI 기술을 도입하여 필요 서비스를 선제적으로 찾아주고 복잡한 민원을 자동 처리합니다.
+              </p>
+              
+              <ul class="space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>AI 기반 정부24:</strong> 9만여 종 민원을 AI 대화형 비서로 쉽게 검색하고 즉시 서류 제로 발급</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>모바일 신분증 플랫폼:</strong> 운전면허증, 주민등록증을 블록체인 기반 스마트폰 탑재로 보안 신원 확인</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>국민비서(구삐) 지능화:</strong> 건강검진일, 과태료, 여권 갱신 등 생애주기별 맞춤 혜택 자동 알림</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-gov-bluepale/60 dark:bg-blue-950/30 rounded-2xl p-6 border border-blue-100 dark:border-blue-900/50">
+              <h4 class="font-bold text-gov-blue dark:text-blue-300 mb-3 flex items-center space-x-2">
+                <i data-lucide="sparkles" class="w-5 h-5 text-gov-blue dark:text-blue-400"></i>
+                <span>국민이 체감하는 AI 서비스</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-blue-100 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">🤖 대화형 AI 행정 도우미</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">"이사 왔는데 뭘 해야 해?"라고만 물어도 전입신고, 확정일자, 아이 전학 신청을 한 번에 안내</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-blue-100 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">🛡️ AI 사이버 관제 & 무중단 행정망</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">인공지능이 24시간 행정 전산망 이상 징후를 감지하고 장애를 사전 예방</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3) 지방자치 & 균형발전 (숨김 상태) -->
+        <div id="tab-local" class="tab-pane hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 font-bold rounded-lg text-xs mb-3 border border-slate-300 dark:border-slate-700">
+                지방시대 & 지역상생
+              </div>
+              <h3 class="text-2xl font-bold text-gov-dark dark:text-white mb-4">"대한민국 어디서나 살기 좋은 지방시대를 만듭니다"</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                수도권 과밀화를 완화하고 전국 17개 시·도 및 226개 시·군·구가 골고루 발전할 수 있도록 
+                재정과 권한을 지방으로 이양하고 지역 경제 활성화를 종합 지원합니다.
+              </p>
+              
+              <ul class="space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>지방재정 및 지방세제 관리:</strong> 지방교부세를 통해 복지·인프라 예산을 지자체별로 공평 배분</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>지방소멸대응기금 지원:</strong> 인구감소지역 청년 정착, 일자리 창출 및 정주 환경 개선</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>고향사랑기부제 총괄:</strong> 고향에 기부하면 세액공제와 우수 지역 답례품을 받는 상생 제도 확산</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+              <h4 class="font-bold text-slate-900 dark:text-slate-200 mb-3 flex items-center space-x-2">
+                <i data-lucide="gift" class="w-5 h-5 text-gov-blue dark:text-blue-400"></i>
+                <span>국민이 체감하는 대표 제도</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">🎁 고향사랑기부제 (고향e음)</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">10만원 기부 시 전액(10만원) 세액공제 혜택과 3만원 상당의 지역 특산품 수령</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">💳 지역사랑상품권 (지역화폐)</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">소상공인 매출 확대와 주민 가계 부담 경감을 위한 할인 발행 국비 지원</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4) 정부 살림 및 공공조직 (숨김 상태) -->
+        <div id="tab-gov" class="tab-pane hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 font-bold rounded-lg text-xs mb-3 border border-slate-300 dark:border-slate-700">
+                정부 조직 & 살림 총괄
+              </div>
+              <h3 class="text-2xl font-bold text-gov-dark dark:text-white mb-4">"효율적이고 일 잘하는 대한민국 정부를 운영합니다"</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                중앙부처의 공무원 정원과 조직 구조를 합리적으로 개편하고, 정부 청사 관리, 공공데이터 개방, 
+                국가 상징(태극기, 애국가, 무궁화, 국새) 및 훈·포장 포상을 엄격하고 명예롭게 주관합니다.
+              </p>
+              
+              <ul class="space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>정부 조직 진단 및 효율화:</strong> 중복 부서를 정비하고 민생 현장 인력을 집중 보강</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>정부세종청사 등 국가 청사 관리:</strong> 정부종합청사 시설 안전 및 스마트 행정 환경 구축</span>
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-gov-blue dark:text-blue-400 mr-2.5 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>국가기록원 및 공공데이터 개방:</strong> 소중한 역사 기록물 보존 및 민간 산업 데이터 무료 개방</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+              <h4 class="font-bold text-slate-900 dark:text-slate-200 mb-3 flex items-center space-x-2">
+                <i data-lucide="award" class="w-5 h-5 text-gov-blue dark:text-blue-400"></i>
+                <span>국민이 체감하는 대표 제도</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">🎖️ 국민추천포상 제도</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">우리 사회 곳곳의 숨은 헌신자(봉사자, 인명구조자)를 국민이 직접 추천해 정부 훈장을 수여</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                  <h5 class="font-bold text-slate-900 dark:text-white text-sm">📊 공공데이터 무료 개방</h5>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">교통, 기상, 상권 공공데이터를 민간에 무료 개방해 국민 편의 앱 개발 촉진</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. 국민 맞춤 바로가기 (내 삶 속의 행안부) -->
+    <section id="citizen-services" class="scroll-mt-24">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+        <div>
+          <span class="text-gov-blue dark:text-blue-300 font-bold text-xs uppercase tracking-wider">Citizen Daily Life Services</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-gov-dark dark:text-white mt-1">일상에서 자주 쓰는 행안부 서비스</h2>
+        </div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-2 md:mt-0">클릭하시면 공식 안내 포털로 바로 연결됩니다.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 카드 1 (정부24) -->
+        <a href="https://www.gov.kr" target="_blank" rel="noopener noreferrer" 
+           class="group bg-white dark:bg-gov-darkcard rounded-2xl p-6 border border-gov-border dark:border-gov-darkborder hover:border-gov-blue dark:hover:border-blue-400 hover:shadow-xl transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-gov-bluepale dark:bg-blue-950/70 text-gov-blue dark:text-blue-300 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-blue-100 dark:border-blue-900">
+              <i data-lucide="file-text" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1 flex items-center justify-between">
+              정부24
+              <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-gov-blue dark:group-hover:text-blue-300"></i>
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">
+              주민등록등본, 전입신고 등 대한민국 9만여 종의 민원서류 24시간 온라인 즉시 발급
+            </p>
+          </div>
+          <span class="text-xs font-bold text-gov-blue dark:text-blue-300 flex items-center">
+            바로가기 <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+          </span>
+        </a>
+
+        <!-- 카드 2 (안전신문고) -->
+        <a href="https://www.safetyreport.go.kr" target="_blank" rel="noopener noreferrer" 
+           class="group bg-white dark:bg-gov-darkcard rounded-2xl p-6 border border-gov-border dark:border-gov-darkborder hover:border-gov-red dark:hover:border-red-400 hover:shadow-xl transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-gov-redpale dark:bg-red-950/70 text-gov-red dark:text-red-300 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-red-100 dark:border-red-900">
+              <i data-lucide="camera" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1 flex items-center justify-between">
+              안전신문고
+              <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-gov-red dark:group-hover:text-red-300"></i>
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">
+              도로 파손, 불법 주정차, 공사장 위험 등 생활 속 안전 위협 요소를 사진으로 즉각 신고
+            </p>
+          </div>
+          <span class="text-xs font-bold text-gov-red dark:text-red-300 flex items-center">
+            바로가기 <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+          </span>
+        </a>
+
+        <!-- 카드 3 (모바일 신분증) -->
+        <a href="https://www.mobileid.go.kr" target="_blank" rel="noopener noreferrer" 
+           class="group bg-white dark:bg-gov-darkcard rounded-2xl p-6 border border-gov-border dark:border-gov-darkborder hover:border-gov-blue dark:hover:border-blue-400 hover:shadow-xl transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-gov-bluepale dark:bg-blue-950/70 text-gov-blue dark:text-blue-300 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-blue-100 dark:border-blue-900">
+              <i data-lucide="smartphone" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1 flex items-center justify-between">
+              모바일 신분증
+              <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-gov-blue dark:group-hover:text-blue-300"></i>
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">
+              운전면허증과 주민등록증을 스마트폰 안으로! 실물 신분증과 완전히 동일한 법적 효력
+            </p>
+          </div>
+          <span class="text-xs font-bold text-gov-blue dark:text-blue-300 flex items-center">
+            바로가기 <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+          </span>
+        </a>
+
+        <!-- 카드 4 (고향사랑 e음) -->
+        <a href="https://www.ilovegohyang.go.kr" target="_blank" rel="noopener noreferrer" 
+           class="group bg-white dark:bg-gov-darkcard rounded-2xl p-6 border border-gov-border dark:border-gov-darkborder hover:border-gov-blue dark:hover:border-blue-400 hover:shadow-xl transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-gov-bluepale dark:bg-blue-950/70 text-gov-blue dark:text-blue-300 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-blue-100 dark:border-blue-900">
+              <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-gov-dark dark:text-white text-lg mb-1 flex items-center justify-between">
+              고향사랑 e음
+              <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-gov-blue dark:group-hover:text-blue-300"></i>
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">
+              내 고향에 기부하고 10만원 전액 세액공제 + 3만원 상당 지역 특산품 답례품 수령
+            </p>
+          </div>
+          <span class="text-xs font-bold text-gov-blue dark:text-blue-300 flex items-center">
+            바로가기 <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 5. 알기 쉬운 FAQ -->
+    <section id="faq" class="scroll-mt-24">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-gov-dark dark:text-white">국민들이 가장 많이 궁금해하는 질문</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm sm:text-base mt-2">행정안전부와 인공지능정부실에 대해 궁금한 점을 시원하게 풀어드립니다.</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto space-y-3">
+        <!-- FAQ 1 (AI정부실 질문 신규 추가) -->
+        <div class="border border-gov-border dark:border-gov-darkborder rounded-xl overflow-hidden bg-white dark:bg-gov-darkcard">
+          <button onclick="toggleFaq(0)" class="w-full px-6 py-4.5 text-left font-bold text-gov-dark dark:text-white flex justify-between items-center hover:bg-gov-bluepale/50 dark:hover:bg-slate-800 transition">
+            <span class="text-base sm:text-lg flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-gov-blue dark:text-blue-300 text-xs font-bold">AI</span>
+              Q. '인공지능정부실'은 기존 전자정부국과 무엇이 다른가요?
+            </span>
+            <i id="faq-icon-0" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faq-ans-0" class="hidden px-6 pb-5 pt-1 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40">
+            기존 전자정부는 '종이 민원을 인터넷 웹사이트나 모바일 앱으로 옮기는 작업(채널 중심)'이 핵심이었습니다. 반면 <strong>인공지능정부실(AX)</strong>은 정책 기획, 데이터 분석, 민원 처리 등 행정 전반에 <strong>초거대 AI 기술을 내재화</strong>하여 국민이 직접 찾아 헤매지 않아도 정부가 먼저 맞춤 혜택을 알려주고 원스톱으로 처리하는 지능형 정부를 만드는 조직입니다.
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="border border-gov-border dark:border-gov-darkborder rounded-xl overflow-hidden bg-white dark:bg-gov-darkcard">
+          <button onclick="toggleFaq(1)" class="w-full px-6 py-4.5 text-left font-bold text-gov-dark dark:text-white flex justify-between items-center hover:bg-gov-bluepale/50 dark:hover:bg-slate-800 transition">
+            <span class="text-base sm:text-lg">Q. 경찰청과 소방청은 행정안전부와 어떤 관계인가요?</span>
+            <i id="faq-icon-1" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faq-ans-1" class="hidden px-6 pb-5 pt-1 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40">
+            경찰청과 소방청은 행정안전부의 <strong>외청(소속기관)</strong>입니다. 범죄 수사와 화재 진압 등 전문 현장 법 집행은 경찰청과 소방청이 직접 수행하며, 행정안전부는 장비·예산 확충과 국가 위기 시 범정부적 재난 총괄 지휘를 담당합니다.
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="border border-gov-border dark:border-gov-darkborder rounded-xl overflow-hidden bg-white dark:bg-gov-darkcard">
+          <button onclick="toggleFaq(2)" class="w-full px-6 py-4.5 text-left font-bold text-gov-dark dark:text-white flex justify-between items-center hover:bg-gov-bluepale/50 dark:hover:bg-slate-800 transition">
+            <span class="text-base sm:text-lg">Q. 긴급재난문자는 왜 행정안전부에서 발송하나요?</span>
+            <i id="faq-icon-2" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faq-ans-2" class="hidden px-6 pb-5 pt-1 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40">
+            재난 및 안전관리 기본법에 따라 국가 재난경보 전파 책임이 행정안전부에 있습니다. 기상청이나 지자체의 위험 정보를 이동통신사 기지국과 연동하여 위험 지역 주민들의 휴대폰으로 수초 내에 긴급 알림을 전파합니다.
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="border border-gov-border dark:border-gov-darkborder rounded-xl overflow-hidden bg-white dark:bg-gov-darkcard">
+          <button onclick="toggleFaq(3)" class="w-full px-6 py-4.5 text-left font-bold text-gov-dark dark:text-white flex justify-between items-center hover:bg-gov-bluepale/50 dark:hover:bg-slate-800 transition">
+            <span class="text-base sm:text-lg">Q. 주민등록증을 분실했을 때 온라인으로 바로 신청 가능한가요?</span>
+            <i id="faq-icon-3" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faq-ans-3" class="hidden px-6 pb-5 pt-1 text-slate-600 dark:text-slate-300 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40">
+            네, 가능합니다. 행정안전부의 <strong>정부24(gov.kr)</strong> 포털 또는 앱에서 간편인증 후 사진 파일을 첨부하여 재발급을 신청할 수 있습니다. 또한 스마트폰에 '모바일 신분증'을 미리 발급해두시면 실물 카드 없이도 어디서나 본인 확인이 가능합니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 응원 한마디 위젯 -->
+    <section class="gov-hero-gradient rounded-3xl p-8 sm:p-12 text-white shadow-xl text-center relative overflow-hidden">
+      <div class="max-w-2xl mx-auto relative z-10">
+        <i data-lucide="heart" class="w-10 h-10 mx-auto text-gov-redlight mb-3 fill-gov-redlight"></i>
+        <h2 class="text-2xl sm:text-3xl font-extrabold mb-3">안전하고 스마트한 대한민국을 응원합니다</h2>
+        <p class="text-slate-200 text-sm sm:text-base mb-8">국민 안전을 지키는 소방관, 경찰관, 일선 행정 및 AI 혁신 공무원 여러분께 응원의 메시지를 전해주세요.</p>
+        
+        <div class="flex flex-col sm:flex-row gap-2 max-w-lg mx-auto">
+          <input type="text" id="cheerInput" placeholder="따뜻한 응원 한마디를 적어주세요!" 
+                 class="px-4 py-3 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-300 text-sm flex-grow bg-white">
+          <button onclick="submitCheer()" class="px-5 py-3 bg-gov-red hover:bg-gov-redlight text-white font-bold rounded-xl text-sm transition shadow-md">
+            응원 등록
+          </button>
+        </div>
+
+        <div id="cheerList" class="mt-6 flex flex-wrap justify-center gap-2 text-xs">
+          <span class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">🙌 밤낮으로 고생하시는 소방관·경찰관님 응원합니다</span>
+          <span class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">🤖 AI정부실의 지능형 민원 서비스 기대됩니다!</span>
+          <span class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">📱 모바일 신분증 정말 유용하게 쓰고 있습니다</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (공공기관 다크네이비 스타일) -->
+  <footer class="bg-gov-dark dark:bg-slate-950 text-slate-300 text-xs sm:text-sm py-12 border-t border-slate-700 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6 pb-8 border-b border-slate-700 dark:border-slate-800">
+        
+        <!-- 푸터 실제 로고 -->
+        <div class="flex items-center space-x-3">
+          <div class="bg-white px-2 py-1 rounded">
+            <img 
+              src="mois_logo.png" 
+              alt="행정안전부 로고" 
+              class="h-7 w-auto object-contain"
+            />
+          </div>
+          <span class="text-white font-bold text-base tracking-tight">행정안전부 대국민 안내 포털</span>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-6 text-slate-300 text-xs">
+          <a href="https://www.mois.go.kr" target="_blank" class="hover:text-white transition">행정안전부 공식 누리집</a>
+          <a href="https://www.gov.kr" target="_blank" class="hover:text-white transition">정부24</a>
+          <a href="https://www.safekorea.go.kr" target="_blank" class="hover:text-white transition">국민재난안전포털</a>
+          <a href="https://www.safetyreport.go.kr" target="_blank" class="hover:text-white transition">안전신문고</a>
+          <a href="https://www.data.go.kr" target="_blank" class="hover:text-white transition">공공데이터포털</a>
+        </div>
+      </div>
+      <div class="pt-8 text-center text-slate-400 text-xs leading-relaxed">
+        <p>본 사이트는 일반 국민이 행정안전부의 핵심 정책과 인공지능정부실(AX)의 대국민 서비스를 쉽게 이해할 수 있도록 구성된 안내 사이트입니다.</p>
+        <p class="mt-2 text-slate-400">세종특별자치시 도움6로 42 (어진동) 정부세종청사 행정안전부 | 민원상담 110(정부민원안내콜센터)</p>
+        <p class="mt-1 text-slate-500">© 2026 Ministry of the Interior and Safety. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 인터랙티브 스크립트 -->
+  <script>
+    // 1. 야간 모드(Dark Mode) 초기화 및 토글 핸들러
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+        updateThemeUI(true);
+      } else {
+        document.documentElement.classList.remove('dark');
+        updateThemeUI(false);
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeUI(isDark);
+    }
+
+    function updateThemeUI(isDark) {
+      const themeText = document.getElementById('themeText');
+      const themeIcon = document.getElementById('themeIcon');
+      if (themeText) {
+        themeText.textContent = isDark ? '주간 모드' : '야간 모드';
+      }
+      if (themeIcon) {
+        themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+      }
+    }
+
+    // 초기 테마 적용
+    initTheme();
+
+    // 2. Lucide Icons 렌더링
+    lucide.createIcons();
+
+    // 3. 4대 핵심 업무 탭 전환
+    function switchTab(tabId) {
+      const tabs = ['safety', 'digital', 'local', 'gov'];
+      tabs.forEach(t => {
+        const pane = document.getElementById('tab-' + t);
+        const btn = document.getElementById('tab-btn-' + t);
+        if (t === tabId) {
+          pane.classList.remove('hidden');
+          btn.className = 'tab-btn active px-5 py-3 rounded-xl font-bold text-sm sm:text-base transition flex items-center space-x-2 bg-gov-blue text-white shadow-md';
+        } else {
+          pane.classList.add('hidden');
+          btn.className = 'tab-btn px-5 py-3 rounded-xl font-bold text-sm sm:text-base transition flex items-center space-x-2 bg-white dark:bg-gov-darkcard text-slate-700 dark:text-slate-200 hover:bg-gov-bluepale dark:hover:bg-slate-800 border border-gov-border dark:border-gov-darkborder';
+        }
+      });
+      lucide.createIcons();
+    }
+
+    // 4. FAQ 아코디언 토글
+    function toggleFaq(index) {
+      const ans = document.getElementById('faq-ans-' + index);
+      const icon = document.getElementById('faq-icon-' + index);
+      if (ans.classList.contains('hidden')) {
+        ans.classList.remove('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      } else {
+        ans.classList.add('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      }
+    }
+
+    // 5. 검색 로직
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!query) {
+        alert('검색어를 입력해주세요! (예: AI정부, 정부24, 안전, 신분증, 지방)');
+        return;
+      }
+
+      if (query.includes('ai') || query.includes('인공지능') || query.includes('ax')) {
+        document.getElementById('ai-gov').scrollIntoView({ behavior: 'smooth' });
+      } else if (query.includes('재난') || query.includes('안전') || query.includes('문자') || query.includes('소방')) {
+        switchTab('safety');
+        document.getElementById('core-roles').scrollIntoView({ behavior: 'smooth' });
+      } else if (query.includes('정부24') || query.includes('모바일') || query.includes('신분증') || query.includes('비서')) {
+        switchTab('digital');
+        document.getElementById('core-roles').scrollIntoView({ behavior: 'smooth' });
+      } else if (query.includes('지방') || query.includes('고향') || query.includes('기부') || query.includes('소멸')) {
+        switchTab('local');
+        document.getElementById('core-roles').scrollIntoView({ behavior: 'smooth' });
+      } else if (query.includes('조직') || query.includes('청사') || query.includes('공무원') || query.includes('데이터')) {
+        switchTab('gov');
+        document.getElementById('core-roles').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        document.getElementById('citizen-services').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function quickFilter(keyword) {
+      document.getElementById('searchInput').value = keyword;
+      handleSearch();
+    }
+
+    // 6. 응원 등록 위젯
+    function submitCheer() {
+      const input = document.getElementById('cheerInput');
+      const text = input.value.trim();
+      if (!text) {
+        alert('응원 메시지를 입력해주세요!');
+        return;
+      }
+      const cheerList = document.getElementById('cheerList');
+      const newBadge = document.createElement('span');
+      newBadge.className = 'bg-white text-gov-blue font-bold px-3 py-1.5 rounded-lg shadow-md border border-white/50 animate-pulse';
+      newBadge.textContent = '💌 ' + text;
+      cheerList.prepend(newBadge);
+      input.value = '';
+      alert('응원 메시지가 성공적으로 등록되었습니다. 감사합니다!');
+    }
+
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') handleSearch();
+    });
+  </script>
+</body>
+</html>
